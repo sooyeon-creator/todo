@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Next.js dev",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["/Users/sooyeon.jun/plugin/todo-habit-tracker/start-dev.sh"],
+      "port": 3000,
+      "autoPort": false
+    }
+  ],
+  "autoVerify": false
+}

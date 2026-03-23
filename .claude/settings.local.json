@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --cache /tmp/npm-cache shadcn@latest add button input card badge progress separator sheet dialog)"
+    ]
+  }
+}
