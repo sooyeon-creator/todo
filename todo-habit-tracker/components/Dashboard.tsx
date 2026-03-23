@@ -6,7 +6,8 @@ import { Task } from '@/types'
 import { createClient } from '@/lib/supabase/client'
 import TaskSection from './tasks/TaskSection'
 import MeetingTab from './meeting/MeetingTab'
-import { Search, X, Trash2, FolderInput, Users, User as UserIcon, LayoutGrid, ArrowUpDown, ArrowUp, ArrowDown, Table2, LayoutDashboard, CalendarClock } from 'lucide-react'
+import GoogleCalendarTab from './calendar/GoogleCalendarTab'
+import { Search, X, Trash2, FolderInput, Users, User as UserIcon, LayoutGrid, ArrowUpDown, ArrowUp, ArrowDown, Table2, LayoutDashboard, CalendarClock, CalendarDays } from 'lucide-react'
 import { useSmoothCorners } from '@/hooks/useSmoothCorners'
 import { getSubtaskItems, setSubtaskCheckedAt } from '@/lib/taskItems'
 
@@ -93,7 +94,7 @@ export default function Dashboard({ user, initialTasks }: Props) {
   const [showFolderMenu, setShowFolderMenu] = useState(false)
   const [folderHovered, setFolderHovered] = useState(false)
   const [notionHovered, setNotionHovered] = useState(false)
-  const [activeTab, setActiveTab] = useState<'all' | 'personal' | 'work' | 'weekly' | 'meeting'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'personal' | 'work' | 'weekly' | 'meeting' | 'calendar'>('all')
 
   // ─── 뷰 모드 ─────────────────────────────────────
   type ViewMode = 'card' | 'table'
@@ -472,6 +473,7 @@ export default function Dashboard({ user, initialTasks }: Props) {
               { key: 'work', label: '업무', icon: <img src="/work-icon.png" alt="업무" style={{ width: 14, height: 14, objectFit: 'contain', filter: 'brightness(0)', opacity: activeTab === 'work' ? 1 : 0.5 }} /> },
               { key: 'weekly', label: '위클리 미팅', icon: <Users size={14} /> },
               { key: 'meeting', label: '운영진 미팅', icon: <CalendarClock size={14} /> },
+              { key: 'calendar', label: '구글 캘린더', icon: <CalendarDays size={14} /> },
             ] as const).map(tab => {
               const active = activeTab === tab.key
               return (
@@ -497,7 +499,7 @@ export default function Dashboard({ user, initialTasks }: Props) {
           </div>
 
           {/* 공유 아이콘 행 — 개인·업무 통합 (운영진 미팅 탭에서는 숨김) */}
-          <div className="flex items-center border-b border-[#e3e2e0] py-1.5 gap-1 mb-2" style={{ display: activeTab === 'meeting' ? 'none' : 'flex' }}>
+          <div className="flex items-center border-b border-[#e3e2e0] py-1.5 gap-1 mb-2" style={{ display: activeTab === 'meeting' || activeTab === 'calendar' ? 'none' : 'flex' }}>
             {selectedIds.size > 0 ? (
               <div className="flex items-center gap-1.5 flex-1">
                 <span className="text-xs font-semibold text-[#37352f] pl-1">{selectedIds.size}개 선택됨</span>
@@ -714,7 +716,9 @@ export default function Dashboard({ user, initialTasks }: Props) {
 
           {/* 탭별 섹션 */}
           <div ref={containerRef} style={{ position: 'relative' }}>
-            {activeTab === 'meeting' ? (
+            {activeTab === 'calendar' ? (
+              <GoogleCalendarTab isMobile={isMobile} />
+            ) : activeTab === 'meeting' ? (
               <MeetingTab isMobile={isMobile} />
             ) : activeTab === 'all' ? (
               <>
